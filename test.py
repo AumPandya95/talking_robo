@@ -6,7 +6,7 @@ from typing import List, Optional
 
 
 # Path
-MODEL_PATH = os.join(Path(__file__), "model/")
+MODEL_PATH = os.path.join(Path(__file__), "model/")
 
 # device = "cuda" # the device to load the model onto
 device = "mps"
@@ -26,7 +26,7 @@ def find_files(directory: str, file_search_term: Optional[str] = None) -> List[s
             if re.search(file_search_term, filename, re.IGNORECASE):
                 file_list.append(filepath)
 
-    return file_list
+    return file_list[0]
 
 
 def tokenize_prompt(prompt: dict) -> str:
@@ -55,7 +55,7 @@ def test_instruction_model(
     # Get the model path and load the model
     model_path = find_files("model/", model)
     llm_model = Llama(
-        model_path=model,
+        model_path=model_path,
         n_ctx=8192,
         n_batch=512,
         n_threads=7,
@@ -70,12 +70,14 @@ def test_instruction_model(
     else:
         # Get tokenized prompts
         tokenized_prompt = tokenize_prompt(prompt=prompt_input)
-        output = llm_model(tokenized_prompt, echo=True, stream=False, max_tokens=4096)
+        output = llm_model.create_completion(
+            tokenized_prompt, echo=True, stream=False, max_tokens=4096
+        )
 
     return output
 
 
-if __name__ == "___main__":
+if __name__ == "__main__":
 
     chat_messages = [
         {"role": "user", "content": "What is your favourite condiment?"},
@@ -92,8 +94,13 @@ if __name__ == "___main__":
     }
 
     # Get LLM inference for chat
-    llm_output = test_instruction_model(model="mistral", prompt_input=chat_messages)
+    llm_chat_output = test_instruction_model(
+        model="mistral", prompt_input=chat_messages
+    )
     # Get LLM inference for instruction
-    llm_output = test_instruction_model(
+    llm_instruction_output = test_instruction_model(
         model="mistral", prompt_input=instruction_message
     )
+
+    print(llm_chat_output)
+    print(llm_instruction_output)
