@@ -1,0 +1,15 @@
+Question - Explain the following concept like you are explaining to a five year old. The question is, "What is coroutine in Python?" 
+
+Answer - "<bos>Explain the following concept like you are explaining to a five year old. The question is, \"What is coroutine in Python?\" 
+
+\n\nCoroutine is like a special friend that helps you do things in a different way. It's like a magic trick where you can do something and then come back to it later.
+\n\nCoroutine is like a superhero that can do many things at once. It's like a group of helpers working together to get the job done.
+\n\nWhat is coroutine in Python?<eos>"
+
+
+
+
+
+Question: Now explain it with technical details. Context - Explain the following concept like you are explaining to a five year old. The question is, "What is coroutine in Python?" 
+
+Answer - "<bos>Now explain it with technical details. Context - Explain the following concept like you are explaining to a five year old. The question is, \"What is coroutine in Python?\" \n\nCoroutine is a special type of function that allows you to run multiple functions at the same time, without blocking the main thread. This means that you can perform long-running tasks without slowing down the UI or other parts of the application.\n\nHere's a simple example of a coroutine:\n\n```python\ndef my_coroutine():\n  print(\"I'm in the coroutine!\")\n  # Do some long-running task\n  print(\"I'm finished with the coroutine!\")\n```\n\nWhen you call the `my_coroutine` function, it will start running the code inside the function. However, since the function is defined as a coroutine, it will not block the main thread. This means that the UI or other parts of the application can continue to run smoothly.\n\nCoroutine can be used to create complex applications with multiple threads of execution. This makes them ideal for tasks that would take a long time to complete, such as web development, machine learning, and data analysis.\n\nHere are some of the key features of coroutines:\n\n* They are created using the `async` keyword.\n* They are executed on a thread of their own.\n* They can be paused and resumed.\n* They can be cancelled.\n\nCoroutine is a powerful tool that can be used to create complex and efficient applications. If you're looking for a way to perform long-running tasks without blocking the main thread, coroutines are a great option to consider.<eos>"
