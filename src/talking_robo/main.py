@@ -38,3 +38,13 @@ def get_model_inference(
     outputs = MODEL.generate(**input_ids, max_length=1000)
 
     return TOKENIZER.decode(outputs[0])
+
+
+
+if __name__ == "__main__":
+    from talking_robo.prompt.prompt_handler import PromptCreator
+    prompt = PromptCreator(
+        question = "What are your capabilities?",
+        model="Claude"
+    )
+    
