@@ -1,3 +1,4 @@
+import os
 import yaml
 from typing import Optional
 from dataclasses import dataclass
@@ -13,6 +14,7 @@ class PromptCreator:
 
     def __post_init__(self):
         self.validate_model()
+        self.yml_loader()
 
     def validate_model(
         self
@@ -29,16 +31,28 @@ class PromptCreator:
         self
     ) -> dict:
         """Load the prompt template"""
-        with open(file_path) as f:
-            try:
-                loaded_data = yaml.safe_load(f)
-                return loaded_data
-            except yaml.YAMLError as e:
-                logger.exception(f"Error while loading YAML from file: {e}")
+        model_name = self.model.lower()
+        file_path = os.path.abspath(f"conf/{model_name}_prompt_template.yml")
+
+        try:
+            with open(file_path) as f:
+                try:
+                    loaded_data = yaml.safe_load(f)
+                    return loaded_data
+                except yaml.YAMLError as e:
+                    raise LangchainException(
+                        errors=f"Error while loading YAML from file: {e}"
+                    )
+        except FileNotFoundError as e:
+            raise LangchainException(
+                errors=f"It seems the prompt template for {self.model} "
+                f"does not exist. Please create one. "
+                f"Error message: {e}"
+            )
 
 
 if __name__ == "__main__":
     prompt_class = PromptCreator(
         question="What are your capabilities?",
-        model="Claude"
+        model="mistral"
     )
