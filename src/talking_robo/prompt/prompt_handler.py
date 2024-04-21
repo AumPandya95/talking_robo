@@ -7,7 +7,7 @@ from talking_robo.exceptions import LangchainException
 
 
 @dataclass
-class PromptCreator:
+class PromptHandler:
     question: str
     model: str
     keep_memory: Optional[bool] = False
@@ -18,7 +18,7 @@ class PromptCreator:
 
     def validate_model(
         self
-    ):
+    ) -> Optional[Exception]:
         """Validate the specified model"""
         if self.model.lower() not in ["gemini", "mistral", "chatgpt"]:
             raise LangchainException(
@@ -53,7 +53,7 @@ class PromptCreator:
 
 
 if __name__ == "__main__":
-    prompt_class = PromptCreator(
+    prompt_class = PromptHandler(
         question="What are your capabilities?",
         model="gemini"
     )
