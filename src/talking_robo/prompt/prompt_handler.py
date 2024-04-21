@@ -14,7 +14,7 @@ class PromptCreator:
 
     def __post_init__(self):
         self.validate_model()
-        self.yml_loader()
+        self.prompt_template = self.yml_loader()
 
     def validate_model(
         self
@@ -38,6 +38,7 @@ class PromptCreator:
             with open(file_path) as f:
                 try:
                     loaded_data = yaml.safe_load(f)
+
                     return loaded_data
                 except yaml.YAMLError as e:
                     raise LangchainException(
@@ -54,5 +55,6 @@ class PromptCreator:
 if __name__ == "__main__":
     prompt_class = PromptCreator(
         question="What are your capabilities?",
-        model="mistral"
+        model="gemini"
     )
+    print(prompt_class.prompt_template)
