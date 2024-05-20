@@ -39,7 +39,7 @@ class PromptHandler:
     ) -> dict:
         """Load the prompt template"""
         model_name = self.model.lower()
-        root_path = os.path.join(Path.cwd().parent)
+        root_path = os.path.join(Path(__file__).parent.parent.parent.parent)
         file_path = os.path.join(
             root_path, f"conf/{model_name}_prompt_template.yml"
         )
