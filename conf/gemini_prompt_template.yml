@@ -2,13 +2,14 @@ prompt:
   system: |
     For the following question, give the answer in the format defined:
 
-    question: {question}
+    question: {question}?
 
     {format_instructions}
 
   response_schemas:
     Explanation: |
       Provide an explanation to the main entity of the question. This entity can either be a coding paradigm or a coding concept.
-    Advantages: List down the advantages or benefits of using the entity defined in the question.
+    Advantages: |
+      List down the advantages or benefits of using the entity defined in the question. Do not use comma separators for different points.
     Example: |
       Give an example of the usage of the main entity of the question. Make sure this example can be run on the machine and is error free.
