@@ -19,7 +19,8 @@ def load_model():
     llm=HuggingFaceEndpoint(
         repo_id="google/gemma-1.1-2b-it",
         temperature=1,
-        max_new_tokens=1000
+        max_new_tokens=1000,
+        huggingfacehub_api_token=os.environ.get('HUGGINGFACEHUB_API_TOKEN')
     )
 
     return llm
@@ -39,8 +40,9 @@ def get_model_inference(
     )
     response = chain_object.response
     output_parser = chain_object.llm_output_parser
+    output_dict = output_parser.parse(response['text'])
 
-    return response, output_parser
+    return response, output_parser, output_dict
 
 
 if __name__ == "__main__":
