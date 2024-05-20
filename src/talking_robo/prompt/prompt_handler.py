@@ -1,20 +1,27 @@
 import os
 import yaml
+from pathlib import Path
 from typing import Optional
 from dataclasses import dataclass
+from langchain.output_parsers import ResponseSchema
+from langchain.output_parsers import StructuredOutputParser
+from langchain_community.llms.huggingface_endpoint import HuggingFaceEndpoint
 
 from talking_robo.exceptions import LangchainException
+from talking_robo.prompt.chain_creator import ChainCreator
 
 
 @dataclass
 class PromptHandler:
-    question: str
+    user_question: str
     model: str
+    hugging_face_pipeline: HuggingFaceEndpoint
     keep_memory: Optional[bool] = False
 
     def __post_init__(self):
         self.validate_model()
         self.prompt_template = self.yml_loader()
+        self.generate_chain()
 
     def validate_model(
         self
@@ -32,7 +39,10 @@ class PromptHandler:
     ) -> dict:
         """Load the prompt template"""
         model_name = self.model.lower()
-        file_path = os.path.abspath(f"conf/{model_name}_prompt_template.yml")
+        root_path = os.path.join(Path.cwd().parent)
+        file_path = os.path.join(
+            root_path, f"conf/{model_name}_prompt_template.yml"
+        )
 
         try:
             with open(file_path) as f:
@@ -50,11 +60,48 @@ class PromptHandler:
                 f"does not exist. Please create one. "
                 f"Error message: {e}"
             )
+    
+    def load_format_instructions(
+        self
+    ) -> str:
+        """Load format instructions"""
+        response_schemas = [
+            ResponseSchema(name=name, description=description)
+            for name, description in self.prompt_template["prompt"][
+                "response_schemas"
+            ].items()
+        ]
+        output_parser = StructuredOutputParser.from_response_schemas(
+            response_schemas
+        )
+
+        return output_parser
+
+
+    def generate_chain(
+        self
+    ) -> str:
+        """Generate prompt"""
+        prompt_object = ChainCreator(
+            user_question=self.user_question,
+            template=self.prompt_template,
+            pipeline=self.hugging_face_pipeline
+        )
+        self.generated_chain = prompt_object.chain
+        # Get output parser
+        self.llm_output_parser = self.load_format_instructions()
+        format_instructions = self.llm_output_parser.get_format_instructions()
+
+        # Invoking the llm
+        self.response = self.generated_chain.invoke(
+            {'question': self.user_question,
+             'format_instructions': format_instructions},
+        )
 
 
 if __name__ == "__main__":
     prompt_class = PromptHandler(
-        question="What are your capabilities?",
-        model="gemini"
+        user_question="What are your capabilities?",
+        model="gemini",
     )
-    print(prompt_class.prompt_template)
+    # print(prompt_class.generated_prompt)

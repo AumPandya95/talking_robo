@@ -1,11 +1,14 @@
 prompt:
   system: |
-    For the following question, give the answer in the following format:
-    
-    Explanation: Explain the concept and solution for the question asked.
-
-    Example: Give an example for the suggested solution.
+    For the following question, give the answer in the format defined:
 
     question: {question}
 
     {format_instructions}
+
+  response_schemas:
+    Explanation: |
+      Provide an explanation to the main entity of the question. This entity can either be a coding paradigm or a coding concept.
+    Advantages: List down the advantages or benefits of using the entity defined in the question.
+    Example: |
+      Give an example of the usage of the main entity of the question. Make sure this example can be run on the machine and is error free.
